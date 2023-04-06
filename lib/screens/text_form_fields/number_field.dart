@@ -7,18 +7,23 @@ class NumberField extends StatefulWidget {
     required this.fieldLabel,
     required this.fieldType,
     this.initialValue = 0,
+    this.hintText = "",
     this.isEnabled = true,
+    this.maxLength = 10,
     required this.onChanged,
-    required this.editingController
-    ,
+    required this.editingController,
+    this.errorText = "Enter a valid positive number",
   });
 
   final String fieldLabel;
   final String fieldType;
   final int initialValue;
+  final String hintText;
   final bool isEnabled;
+  final dynamic maxLength;
   final ValueChanged<String> onChanged;
   final TextEditingController editingController;
+  final String errorText;
 
   @override
   State<NumberField> createState() => _NumberFieldState();
@@ -34,7 +39,7 @@ class _NumberFieldState extends State<NumberField> {
       onChanged: (value) {
         setState(() {
           if (!value.isValidIntGreaterZero()) {
-            _errorText = "Enter a valid positive number";
+            _errorText = widget.errorText;
           } else {
             _errorText = null;
             widget.onChanged(value);
@@ -47,7 +52,7 @@ class _NumberFieldState extends State<NumberField> {
         signed: false,
       ),
 
-      maxLength: 10,
+      maxLength: widget.maxLength,
       maxLengthEnforcement: MaxLengthEnforcement.enforced,
 
       //this decoration will merge with the theme set
@@ -60,7 +65,7 @@ class _NumberFieldState extends State<NumberField> {
 
         errorText: _errorText,
 
-        hintText: "",
+        hintText: widget.hintText,
 
         //suffix widget only appears when field is populated
         suffix: Text(widget.fieldType),

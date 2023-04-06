@@ -8,7 +8,12 @@ import '../services/utils.dart';
 import '../widgets/distance_log_tile.dart';
 import 'add_distance_log_page.dart';
 
+///
+/// DistanceLogPage home page
+///
 class DistanceListPage extends StatefulWidget {
+  const DistanceListPage({super.key});
+
 
   @override
   State<DistanceListPage> createState() => _DistanceListPageState();
@@ -73,7 +78,6 @@ class _DistanceListPageState extends State<DistanceListPage> {
           separatorBuilder: (_, __) => const Divider(),
 
           itemBuilder: (BuildContext context, int index) {
-            // if (index == 0) return TodosOverview(todos: _distanceTravelList);
             final distTravel = _distanceTravelList[index];
             return DistanceLogTile(
               updateDistanceLog: _getDistanceTravelList,
@@ -83,6 +87,7 @@ class _DistanceListPageState extends State<DistanceListPage> {
         ),
       ),
 
+      // Floating action buttons
       floatingActionButton: Row (
 
         mainAxisAlignment: MainAxisAlignment.end,
@@ -90,6 +95,7 @@ class _DistanceListPageState extends State<DistanceListPage> {
         children: <Widget> [
           const SizedBox(width: 20.0),
 
+          //Add a new travel log entry
           FloatingActionButton(
             heroTag: null,
             onPressed: () => Navigator.push(
@@ -104,6 +110,7 @@ class _DistanceListPageState extends State<DistanceListPage> {
 
           const SizedBox(width: 20.0),
 
+          // Email selected user the current report (comma separated)
           FloatingActionButton(
             heroTag: null,
             onPressed: () {
@@ -122,9 +129,7 @@ class _DistanceListPageState extends State<DistanceListPage> {
                     );
                   });
                 }
-
               });
-
             },
 
             child: const Icon(Icons.email_outlined),
@@ -132,6 +137,7 @@ class _DistanceListPageState extends State<DistanceListPage> {
 
           const SizedBox(width: 20.0),
 
+          // Write comma separated report to file
           FloatingActionButton(
             heroTag: null,
             onPressed: () {
@@ -155,6 +161,5 @@ class _DistanceListPageState extends State<DistanceListPage> {
 
     );
   }
-
 
 }

@@ -2,6 +2,7 @@
 import 'package:distance_travel_log/models/distance_travel_model.dart';
 import 'package:distance_travel_log/screens/text_form_fields/date_field.dart';
 import 'package:distance_travel_log/screens/text_form_fields/number_field.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../services/database_service.dart';
@@ -12,13 +13,12 @@ class AddDistanceLogPage extends StatefulWidget {
   final VoidCallback updateDistanceLog;
   final DistanceTravel? distanceTravel;
 
-  const AddDistanceLogPage({
+  const AddDistanceLogPage({super.key,
     required this.updateDistanceLog,
     this.distanceTravel,
   });
 
-  @override
-  _AddDistanceLogPageImpl createState() => _AddDistanceLogPageImpl();
+  @override createState() => _AddDistanceLogPageImpl();
 }
 
 class _AddDistanceLogPageImpl extends State<AddDistanceLogPage> {
@@ -68,6 +68,15 @@ class _AddDistanceLogPageImpl extends State<AddDistanceLogPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    editDateController.dispose();
+    editOdStartController.dispose();
+    editOdEndController.dispose();
+    deltaOdTextController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -91,7 +100,9 @@ class _AddDistanceLogPageImpl extends State<AddDistanceLogPage> {
               initDateValue: DateTime.now().toString().substring(0, 10),
               onChanged: (value) {
                 editDateController.text = value;
-                print("HOME PAGE == valueDate = [$value]");
+                if (kDebugMode) {
+                  print("HOME PAGE == valueDate = [$value]");
+                }
               },
               editingController: editDateController,
             ),
@@ -99,6 +110,7 @@ class _AddDistanceLogPageImpl extends State<AddDistanceLogPage> {
             NumberField(
                 fieldLabel: "Start Odometer Mileage",
                 fieldType: "Miles",
+                hintText: "Start OD Reading",
                 onChanged: (value) {
                   setState(() {
                     valueOdStart = int.parse(value);
@@ -106,12 +118,15 @@ class _AddDistanceLogPageImpl extends State<AddDistanceLogPage> {
                     deltaOdTextController.text = valueOdDelta.toString();
                   });
                 },
-              editingController: editOdStartController,
+                editingController: editOdStartController,
+                errorText: "Enter a valid starting OD reading.",
+
             ),
 
             NumberField(
               fieldLabel: "End Odometer Mileage",
               fieldType: "Miles",
+              hintText: "End OD Reading",
               onChanged: (value) {
                 setState(() {
                   valueOdEnd = int.parse(value);
@@ -122,12 +137,15 @@ class _AddDistanceLogPageImpl extends State<AddDistanceLogPage> {
                 // print("valueInitOdDelta = $valueInitOdDelta");
               },
               editingController: editOdEndController,
+              errorText: "Enter a valid ending OD reading.",
             ),
 
             NumberField(
               fieldLabel: "Distance",
               fieldType: "Miles",
+              hintText: "Delta End and Start OD Readings",
               isEnabled: false,
+              maxLength: null,
               onChanged: (value) {
                 setState(() {
                   valueOdDelta = int.parse(value);
@@ -180,12 +198,14 @@ class _AddDistanceLogPageImpl extends State<AddDistanceLogPage> {
         distance: deltaOdTextController.text.isEmpty ? -1 :
         int.parse(deltaOdTextController.text));
 
-    print("_distanceTravel === ${_distanceTravel.toString()}");
+    if (kDebugMode) {
+      print("_distanceTravel === ${_distanceTravel.toString()}");
+    }
 
     //TODO - validate that start < end and dist > 0
     String errorText = _distanceTravel.checkValidity();
     if (errorText.isNotEmpty) {
-      var result = await Utils.buildShowDialog(context, "Invalid Data", errorText, true);
+      await Utils.buildShowDialog(context, "Invalid Data", errorText, true);
       return;
     }
 

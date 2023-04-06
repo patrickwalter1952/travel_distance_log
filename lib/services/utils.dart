@@ -2,7 +2,6 @@
 import 'dart:io';
 
 import 'package:distance_travel_log/services/string_extensions.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:path_provider/path_provider.dart';
@@ -90,8 +89,6 @@ class Utils {
   static Future<dynamic> buildShowTextFieldDialog(
       BuildContext context,
       TextEditingController textFieldController) async {
-
-    String email = "";
 
     return showDialog(
       context: context,
